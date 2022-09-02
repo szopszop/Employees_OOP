@@ -30,29 +30,14 @@ public class Main {
         Matcher peopleMat = peoplePat.matcher(peopleText);
 
         int totalSalaries = 0;
+        Employee employee = null;
         while (peopleMat.find()) {
-            totalSalaries += switch (peopleMat.group("role")) {
-                case "Programmer" -> {
-                    Programmer programmer = new Programmer(peopleMat.group());
-                    System.out.println(programmer);
-                    yield programmer.getSalary();
-                }
-                case "Manager" -> {
-                    Manager manager = new Manager(peopleMat.group());
-                    System.out.println(manager);
-                    yield manager.getSalary();
-                }
-                case "Analyst" -> {
-                    Analyst analyst = new Analyst(peopleMat.group());
-                    System.out.println(analyst);
-                    yield analyst.getSalary();
-                }
-                case "CEO" -> {
-                    CEO ceo = new CEO(peopleMat.group());
-                    System.out.println(ceo);
-                    yield ceo.getSalary();
-                }
-                default -> 0;
+            employee = switch (peopleMat.group("role")) {
+                case "Programmer" -> new Programmer(peopleMat.group());
+                case "Manager" -> new Manager(peopleMat.group());
+                case "Analyst" -> new Analyst(peopleMat.group());
+                case "CEO" -> new CEO(peopleMat.group());
+                default -> null;
             };
         }
         NumberFormat currencyInstance  = NumberFormat.getCurrencyInstance();
