@@ -23,6 +23,7 @@ public class Main {
                 Flinstone4, Wilma4, 3/3/1910, Analyst, {projectCount=2}
                 Flinstone5, Wilma5, 3/3/1910, Analyst, {projectCount=10}
                 Rubble, Betty, 4/4/1915, CEO, {avgStockPrice=300}
+                Tracz, Szymon, 1/1/1993, Noob
                 """;
 
         String peopleRegex = "(?<lastName>\\w+),\\s*(?<firstName>\\w+),\\s*(?<dob>\\d{1,2}/\\d{1,2}/\\d{4}),\\s*(?<role>\\w+)(?:,\\s*\\{(?<details>.*)\\})?\\n";
@@ -30,15 +31,17 @@ public class Main {
         Matcher peopleMat = peoplePat.matcher(peopleText);
 
         int totalSalaries = 0;
-        Employee employee = null;
+        Employee employee;
         while (peopleMat.find()) {
             employee = switch (peopleMat.group("role")) {
                 case "Programmer" -> new Programmer(peopleMat.group());
                 case "Manager" -> new Manager(peopleMat.group());
                 case "Analyst" -> new Analyst(peopleMat.group());
                 case "CEO" -> new CEO(peopleMat.group());
-                default -> null;
+                default -> new Nobody(peopleMat.group());
             };
+            System.out.println(employee);
+            totalSalaries += employee.getSalary();
         }
         NumberFormat currencyInstance  = NumberFormat.getCurrencyInstance();
         System.out.printf("The total payout should be %s%n", currencyInstance.format(totalSalaries));
