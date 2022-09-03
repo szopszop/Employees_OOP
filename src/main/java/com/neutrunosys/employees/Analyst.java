@@ -22,5 +22,4 @@ public class Analyst extends Employee {
         return 2500 + projectCount;
     }
 
-
 }

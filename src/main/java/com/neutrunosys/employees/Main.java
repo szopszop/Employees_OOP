@@ -2,7 +2,6 @@ package com.neutrunosys.employees;
 
 import java.text.NumberFormat;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) {
@@ -26,24 +25,23 @@ public class Main {
                 Tracz, Szymon, 1/1/1993, Noob
                 """;
 
-        String peopleRegex = "(?<lastName>\\w+),\\s*(?<firstName>\\w+),\\s*(?<dob>\\d{1,2}/\\d{1,2}/\\d{4}),\\s*(?<role>\\w+)(?:,\\s*\\{(?<details>.*)\\})?\\n";
-        Pattern peoplePat = Pattern.compile(peopleRegex);
-        Matcher peopleMat = peoplePat.matcher(peopleText);
+//        String peopleRegex = "(?<lastName>\\w+),\\s*(?<firstName>\\w+),\\s*(?<dob>\\d{1,2}/\\d{1,2}/\\d{4}),\\s*(?<role>\\w+)(?:,\\s*\\{(?<details>.*)\\})?\\n";
+//        Pattern peoplePat = Pattern.compile(peopleRegex);
+        Matcher peopleMat = Employee.PEOPLE_PATTERN.matcher(peopleText);
 
         int totalSalaries = 0;
-        Employee employee;
+        IEmployee employee;
         while (peopleMat.find()) {
-            employee = switch (peopleMat.group("role")) {
-                case "Programmer" -> new Programmer(peopleMat.group());
-                case "Manager" -> new Manager(peopleMat.group());
-                case "Analyst" -> new Analyst(peopleMat.group());
-                case "CEO" -> new CEO(peopleMat.group());
-                default -> new Nobody(peopleMat.group());
-            };
-            System.out.println(employee);
-            totalSalaries += employee.getSalary();
+            employee = Employee.createEmployee(peopleMat.group());
+            if (employee != null) {
+                System.out.println(employee);
+                totalSalaries += employee.getSalary();
+            }
         }
-        NumberFormat currencyInstance  = NumberFormat.getCurrencyInstance();
+
+        NumberFormat currencyInstance = NumberFormat.getCurrencyInstance();
         System.out.printf("The total payout should be %s%n", currencyInstance.format(totalSalaries));
+
+
     }
 }
