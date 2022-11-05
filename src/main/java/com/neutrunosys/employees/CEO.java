@@ -10,6 +10,8 @@ public class CEO extends Employee implements ISuperHuman {
     Pattern ceoPattern = Pattern.compile(ceoRegex);
 
 
+    private Pilot pilot = new Pilot(1000, true);
+
     public CEO(String personText) {
         super(personText);
         Matcher ceoMatcher = ceoPattern.matcher(peopleMatcher.group("details"));
@@ -29,5 +31,25 @@ public class CEO extends Employee implements ISuperHuman {
     @Override
     public void jump() {
         System.out.println("jump!");
+    }
+
+    public int getHoursFlown() {
+        return pilot.getHoursFlown();
+    }
+
+    public void setHoursFlown(int hoursFlown) {
+        pilot.setHoursFlown(hoursFlown);
+    }
+
+    public boolean isIfr() {
+        return pilot.isIfr();
+    }
+
+    public void setIfr(boolean ifr) {
+        pilot.setIfr(ifr);
+    }
+
+    public void fly() {
+        pilot.fly();
     }
 }

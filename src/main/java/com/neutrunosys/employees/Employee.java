@@ -11,13 +11,17 @@ public abstract class Employee implements IEmployee {
     protected final NumberFormat moneyFormat = NumberFormat.getCurrencyInstance();
     private static final String PEOPLE_REGEX = "(?<lastName>\\w+),\\s*(?<firstName>\\w+),\\s*(?<dob>\\d{1,2}/\\d{1,2}/\\d{4}),\\s*(?<role>\\w+)(?:,\\s*\\{(?<details>.*)\\})?\\n";
     public static final Pattern PEOPLE_PATTERN = Pattern.compile(PEOPLE_REGEX);
-    protected final Matcher peopleMatcher;
+    protected Matcher peopleMatcher;
     protected String lastName;
     protected String firstName;
     protected LocalDate dob;
     DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("M/d/yyyy");
 
 
+    public Employee() {
+        this.lastName = "N/A";
+        this.firstName = "N/A";
+    }
 
     public Employee(String personText) {
         peopleMatcher = PEOPLE_PATTERN.matcher(personText);
@@ -28,7 +32,7 @@ public abstract class Employee implements IEmployee {
         }
     }
 
-    public static Employee createEmployee (String employeeText) {
+    public static IEmployee createEmployee (String employeeText) {
         Matcher peopleMat = Employee.PEOPLE_PATTERN.matcher(employeeText);
 
         if (peopleMat.find()) {
@@ -37,10 +41,10 @@ public abstract class Employee implements IEmployee {
                 case "Manager" -> new Manager(peopleMat.group());
                 case "Analyst" -> new Analyst(peopleMat.group());
                 case "CEO" -> new CEO(peopleMat.group());
-                default -> new DummyEmployee(peopleMat.group());
+                default -> () -> 0;
             };
         } else {
-            return null;
+            return () -> 0;
         }
     }
 
@@ -58,11 +62,7 @@ public abstract class Employee implements IEmployee {
     }
 
 
-    private static final class DummyEmployee extends Employee {
-
-        public DummyEmployee(String personText) {
-            super(personText);
-        }
+    private static final class DummyEmployee extends Employee implements IEmployee {
 
         @Override
         public int getSalary() {
